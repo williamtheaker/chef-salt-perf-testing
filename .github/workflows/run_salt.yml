@@ -35,7 +35,7 @@ jobs:
         run: |
           mkdir /tmp/salt
           cp -R salt /tmp/salt
-          cp minion_settings_mac.yml /etc/salt/master
+          sudo cp minion_settings_mac.yml /etc/salt/master
           ls /tmp/salt
           sudo salt-call --local state.apply
 
@@ -71,5 +71,5 @@ jobs:
       - name: Run Salt
         working-directory: repo
         run: |
-          move minion_settings_windows.yml C:\salt\conf\master
+          move repo\minion_settings_windows.yml C:\salt\conf\master
           salt-call --local state.apply
