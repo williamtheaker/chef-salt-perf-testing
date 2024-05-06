@@ -6,8 +6,7 @@ on:
 jobs:
   macOS:
     runs-on: macos-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    timeout-minutes: 15
+    timeout-minutes: 10
     env:
       SALT_PKG_SHA512: "6f7559fff4e10131a269dc3a45248642c5d2ba4bb0b069119e00b0ca25b34a35cacc4ec710125e88a7ea39a1c0f437e42f2e456d1fbae225d3dc8ca81650ab30"
       SALT_PKG_URL: "https://repo.saltproject.io/salt/py3/macos/latest/salt-3007.0-py3-x86_64.pkg"
@@ -34,7 +33,7 @@ jobs:
       - name: Run Salt
         run: |
           mkdir /tmp/salt
-          cp -R salt /tmp/salt
+          cp -R salt /tmp
           sudo cp minion_settings_mac.yml /etc/salt/master
           sudo cp minion_settings_mac.yml /etc/salt/minion
           ls /tmp/salt
@@ -42,8 +41,7 @@ jobs:
 
   Windows:
     runs-on: windows-2022
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    timeout-minutes: 10
+    timeout-minutes: 7
     env:
       SALT_MSI_SHA512: "6236d6b272c8d64db5809af68b32b6bc072c2216b31c9a87befb54951d9867ebe05d3ca7cd42fdca1ac976907fc7b117f9a02dec3cc4a23f702e0d011167c638"
       SALT_MSI_URL: "https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3007.0-Py3-AMD64.msi"
@@ -67,12 +65,15 @@ jobs:
 
       - name: Install Salt
         run: |
-          msiexec /qn /i c:\salt.msi INSTALLDIR=C:\Salt
+          msiexec /qn /i c:\salt.msi
+
+      - name: Check Salt dir
+        run: |
+          dir "C:\Program Files\Salt Project\Salt"
 
       - name: Run Salt
         working-directory: repo
         run: |
-          while (!(Test-Path "C:\salt\conf\minion")) { Start-Sleep 5 }
-          mkdir C:\salt\conf\
-          move minion_settings_windows.yml C:\salt\conf\master
+          while (!(Test-Path "C:\Program Files\Salt Project\Salt")) { Start-Sleep 5 }
+          move minion_settings_windows.yml C:\Program Files\Salt Project\Salt\conf\master
           salt-call --local state.apply
