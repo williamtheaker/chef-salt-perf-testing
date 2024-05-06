@@ -35,8 +35,8 @@ jobs:
         run: |
           mkdir /tmp/salt
           cp -R salt /tmp/salt
-          sudo mv minion_settings_mac.yml /etc/salt/master
-          sudo mv minion_settings_mac.yml /etc/salt/minion
+          sudo cp minion_settings_mac.yml /etc/salt/master
+          sudo cp minion_settings_mac.yml /etc/salt/minion
           ls /tmp/salt
           sudo salt-call --local state.apply -l debug
 
@@ -67,7 +67,7 @@ jobs:
 
       - name: Install Salt
         run: |
-          msiexec /qn /i c:\salt.msi
+          msiexec /qn /i c:\salt.msi INSTALLDIR=C:\Salt
 
       - name: Run Salt
         working-directory: repo
