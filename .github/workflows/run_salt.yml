@@ -1,0 +1,75 @@
+name: Salt performance testing
+
+on:
+  workflow_dispatch
+
+jobs:
+  macOS:
+    runs-on: macos-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    timeout-minutes: 15
+    env:
+      SALT_PKG_SHA512: "6f7559fff4e10131a269dc3a45248642c5d2ba4bb0b069119e00b0ca25b34a35cacc4ec710125e88a7ea39a1c0f437e42f2e456d1fbae225d3dc8ca81650ab30"
+      SALT_PKG_URL: "https://repo.saltproject.io/salt/py3/macos/latest/salt-3007.0-py3-x86_64.pkg"
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+
+      - name: Cache Salt installer
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9  # v4.0.2
+        id: salt-pkg-cache
+        with:
+          path: /tmp/salt.pkg
+          key: ${{ runner.os }}-salt-installer-${{ env.SALT_PKG_SHA512 }}
+
+      - name: Download Salt
+        if: steps.salt-pkg-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -L $SALT_PKG_URL --output /tmp/salt.pkg
+
+      - name: Install Salt
+        run: |
+          sudo installer -pkg /tmp/salt.pkg -target /
+
+      - name: Run Salt
+        run: |
+          mkdir /tmp/salt
+          cp -R salt /tmp/salt
+          cp minion_settings_mac.yml /etc/salt/master
+          ls /tmp/salt
+          sudo salt-call --local state.apply
+
+  Windows:
+    runs-on: windows-2022
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    timeout-minutes: 15
+    env:
+      SALT_MSI_SHA512: "6236d6b272c8d64db5809af68b32b6bc072c2216b31c9a87befb54951d9867ebe05d3ca7cd42fdca1ac976907fc7b117f9a02dec3cc4a23f702e0d011167c638"
+      SALT_MSI_URL: "https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3007.0-Py3-AMD64.msi"
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+        with:
+          path: repo
+
+      - name: Cache Salt installer
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9  # v4.0.2
+        id: salt-msi-cache
+        with:
+          path: C:\salt.msi
+          key: ${{ runner.os }}-salt-installer-${{ env.SALT_MSI_SHA512 }}
+
+      - name: Download Salt
+        if: steps.salt-msi-cache.outputs.cache-hit != 'true'
+        run: |
+          Invoke-WebRequest -Uri ${{ env.SALT_MSI_URL }} -OutFile C:\salt.msi
+
+      - name: Install Salt
+        run: |
+          msiexec /qn /i c:\salt.msi
+
+      - name: Run Salt
+        working-directory: repo
+        run: |
+          move minion_settings_windows.yml C:\salt\conf\master
+          salt-call --local state.apply
