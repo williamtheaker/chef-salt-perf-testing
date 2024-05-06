@@ -11,7 +11,7 @@
       path windows? ? "C:\\x" : "/tmp/#{x}"
     end
 
-    registry_key "HKEY_CURRENT_USER\ChefTest" do
+    registry_key "HKEY_CURRENT_USER\\ChefTest" do
       values [{
           :name => x,
           :type => :string,
@@ -27,7 +27,7 @@ end
       action :delete
     end
 
-    registry_key "HKEY_CURRENT_USER\ChefTest" do
+    registry_key "HKEY_CURRENT_USER\\ChefTest" do
       action :delete
     end
 end
