@@ -5,7 +5,7 @@ import string
 
 def run():
     command_dict = {}
-    for num in range(0,11):
+    for num in range(0,101):
 
         # Create resources
         random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8192))
