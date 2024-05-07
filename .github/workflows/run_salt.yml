@@ -43,8 +43,8 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 7
     env:
-      SALT_MSI_SHA512: "6236d6b272c8d64db5809af68b32b6bc072c2216b31c9a87befb54951d9867ebe05d3ca7cd42fdca1ac976907fc7b117f9a02dec3cc4a23f702e0d011167c638"
-      SALT_MSI_URL: "https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3007.0-Py3-AMD64.msi"
+      SALT_EXE_VERSION: "3007"
+      SALT_EXE_URL: "https://repo.saltproject.io/salt/py3/windows/latest/Salt-Minion-3007.0-Py3-AMD64-Setup.exe"
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
@@ -55,18 +55,18 @@ jobs:
         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9  # v4.0.2
         id: salt-msi-cache
         with:
-          path: C:\salt.msi
-          key: ${{ runner.os }}-salt-installer-${{ env.SALT_MSI_SHA512 }}
+          path: C:\salt.exe
+          key: ${{ runner.os }}-salt-installer-${{ env.SALT_EXE_VERSION }}
 
       - name: Download Salt
         if: steps.salt-msi-cache.outputs.cache-hit != 'true'
         run: |
-          Invoke-WebRequest -Uri ${{ env.SALT_MSI_URL }} -OutFile C:\salt.msi
+          Invoke-WebRequest -Uri ${{ env.SALT_EXE_URL }} -OutFile C:\salt.exe
 
       - name: Install Salt
         run: |
-          msiexec /qn /i c:\salt.msi
-          while (!(Test-Path "C:\Program Files\Salt Project\Salt\bin\Scripts\salt-call")) { Start-Sleep 5 }
+          C:\salt.exe /S
+          while (!(Test-Path "C:\Program Files\Salt Project\Salt\salt-call")) { Start-Sleep 5 }
           Write-Host "Salt installed"
 
       - name: Run Salt
