@@ -66,8 +66,7 @@ jobs:
       - name: Install Salt
         run: |
           C:\salt.exe /S
-          while (!(Test-Path "C:\Program Files\Salt Project\Salt\salt-call")) { Start-Sleep 5 }
-          Write-Host "Salt installed"
+          Start-Sleep -Seconds 60
 
       - name: Run Salt
         working-directory: repo
