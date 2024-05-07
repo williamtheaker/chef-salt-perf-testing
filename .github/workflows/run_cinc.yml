@@ -6,7 +6,6 @@ on:
 jobs:
   macOS:
     runs-on: macos-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
     timeout-minutes: 15
     env:
       CINC_CLIENT_SHA256: "c1b44b67d4cbd0c46833b5b6082ce494f4194ad91704ab7d8ba3170f5d72039f"
@@ -49,7 +48,6 @@ jobs:
 
   Windows:
     runs-on: windows-2022
-    if: ${{ github.actor != 'dependabot[bot]' }}
     timeout-minutes: 15
     env:
       CINC_CLIENT_SHA256: "238032b3f9fc24ee1b2c858e069b0043746218140d5fb3dd07123d632b7fb5bf"
@@ -92,9 +90,10 @@ jobs:
       - name: Install Cinc
         run: |
           msiexec /qn /i c:\cinc.msi
+          while (!(Test-Path "C:\cinc-project\cinc\LICENSE")) { Start-Sleep 5 }
+          Write-Host "Cinc installed"
 
-      - name: Retrieve data bag key from Github secrets and run Cinc
+      - name: Run Cinc
         working-directory: chef-repo
         run: |
-          while (!(Test-Path "C:\cinc-project\cinc\LICENSE")) { Start-Sleep 5 }
           C:\cinc-project\cinc\bin\cinc-client.bat -z -o example

@@ -66,10 +66,11 @@ jobs:
       - name: Install Salt
         run: |
           msiexec /qn /i c:\salt.msi
+          while (!(Test-Path "C:\Program Files\Salt Project\Salt")) { Start-Sleep 5 }
+          Write-Host "Salt installed"
 
       - name: Run Salt
         working-directory: repo
         run: |
-          while (!(Test-Path "C:\Program Files\Salt Project\Salt")) { Start-Sleep 5 }
           move minion_settings_windows.yml C:\Program Files\Salt Project\Salt\conf\master
           salt-call --local state.apply

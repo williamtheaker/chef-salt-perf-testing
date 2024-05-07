@@ -8,7 +8,7 @@
 
     file x do
       content random_string
-      path windows? ? "C:\\x" : "/tmp/#{x}"
+      path windows? ? "C:\\#{x}" : "/tmp/#{x}"
     end
 
     registry_key "HKEY_CURRENT_USER\\ChefTest" do
@@ -18,16 +18,24 @@
           :data => random_string,
       }]
       action :create
+      only_if { windows? }
     end
 end
 
 # Destroy resources
 (0..100).each do |x|
-    file "/tmp/#{x}" do
+    file x do
       action :delete
+      path windows? ? "C:\\#{x}" : "/tmp/#{x}"
     end
 
     registry_key "HKEY_CURRENT_USER\\ChefTest" do
+      values [{
+          :name => x.to_s,
+          :type => :string,
+          :data => "",
+      }]
       action :delete
+      only_if { windows? }
     end
 end
