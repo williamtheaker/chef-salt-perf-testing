@@ -71,6 +71,7 @@ jobs:
       - name: Configure Salt states
         working-directory: repo
         run: |
+          mkdir "C:\Program Files\Salt Project\Salt\srv\salt\"
           copy salt\top.sls "C:\Program Files\Salt Project\Salt\srv\salt\top.sls"
           copy salt\testing.sls "C:\Program Files\Salt Project\Salt\srv\salt\testing.sls"
 
