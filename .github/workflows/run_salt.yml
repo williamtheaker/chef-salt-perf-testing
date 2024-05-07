@@ -36,7 +36,6 @@ jobs:
 #           cp -R salt /tmp
 #           sudo cp minion_settings_mac.yml /etc/salt/master
 #           sudo cp minion_settings_mac.yml /etc/salt/minion
-#           ls /tmp/salt
 #           sudo salt-call --local state.apply -l debug
 
   Windows:
@@ -70,7 +69,10 @@ jobs:
           Write-Host "Salt installed"
 
       - name: Run Salt
-        # working-directory: repo
+        working-directory: repo
         run: |
+          mkdir "C:\ProgramData\Salt Project\Salt\conf\"
+          copy minion_settings_windows.yml "C:\ProgramData\Salt Project\Salt\conf\minion"
+          copy minion_settings_windows.yml "C:\ProgramData\Salt Project\Salt\conf\master"
           cd "C:\Program Files\Salt Project\Salt\"
           ./salt-call.exe --local state.apply -l debug
