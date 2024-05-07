@@ -72,4 +72,4 @@ jobs:
       - name: Run Salt
         working-directory: repo
         run: |
-          & "C:\Program Files\Salt Project\Salt\salt-call.exe" --local state.apply  -l debug
+          Start-Process -FilePath "C:\Program Files\Salt Project\Salt\salt-call.exe" -ArgumentList "--local state.apply -l debug"
