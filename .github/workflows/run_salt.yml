@@ -3,7 +3,7 @@ name: Salt performance testing
 on:
   workflow_dispatch
 
-# jobs:
+jobs:
 #   macOS:
 #     runs-on: macos-latest
 #     timeout-minutes: 10
