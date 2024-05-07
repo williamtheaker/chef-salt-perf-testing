@@ -13,7 +13,7 @@
 
     registry_key "HKEY_CURRENT_USER\\ChefTest" do
       values [{
-          :name => x,
+          :name => x.to_s,
           :type => :string,
           :data => random_string,
       }]

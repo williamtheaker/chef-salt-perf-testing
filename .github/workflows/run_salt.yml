@@ -67,10 +67,6 @@ jobs:
         run: |
           msiexec /qn /i c:\salt.msi
 
-      - name: Check Salt dir
-        run: |
-          dir "C:\Program Files\Salt Project\Salt"
-
       - name: Run Salt
         working-directory: repo
         run: |
