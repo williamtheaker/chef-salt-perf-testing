@@ -71,4 +71,5 @@ jobs:
       - name: Run Salt
         working-directory: repo
         run: |
+          dir "C:\Program Files\Salt Project\Salt\"
           salt-call --local state.apply  -l debug
