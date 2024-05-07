@@ -1,43 +1,43 @@
-name: Salt performance testing
-
-on:
-  workflow_dispatch
-
-jobs:
-  macOS:
-    runs-on: macos-latest
-    timeout-minutes: 10
-    env:
-      SALT_PKG_SHA512: "6f7559fff4e10131a269dc3a45248642c5d2ba4bb0b069119e00b0ca25b34a35cacc4ec710125e88a7ea39a1c0f437e42f2e456d1fbae225d3dc8ca81650ab30"
-      SALT_PKG_URL: "https://repo.saltproject.io/salt/py3/macos/latest/salt-3007.0-py3-x86_64.pkg"
-    steps:
-      - name: Checkout latest commit
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-
-      - name: Cache Salt installer
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9  # v4.0.2
-        id: salt-pkg-cache
-        with:
-          path: /tmp/salt.pkg
-          key: ${{ runner.os }}-salt-installer-${{ env.SALT_PKG_SHA512 }}
-
-      - name: Download Salt
-        if: steps.salt-pkg-cache.outputs.cache-hit != 'true'
-        run: |
-          curl -L $SALT_PKG_URL --output /tmp/salt.pkg
-
-      - name: Install Salt
-        run: |
-          sudo installer -pkg /tmp/salt.pkg -target /
-
-      - name: Run Salt
-        run: |
-          mkdir /tmp/salt
-          cp -R salt /tmp
-          sudo cp minion_settings_mac.yml /etc/salt/master
-          sudo cp minion_settings_mac.yml /etc/salt/minion
-          ls /tmp/salt
-          sudo salt-call --local state.apply -l debug
+# name: Salt performance testing
+#
+# on:
+#   workflow_dispatch
+#
+# jobs:
+#   macOS:
+#     runs-on: macos-latest
+#     timeout-minutes: 10
+#     env:
+#       SALT_PKG_SHA512: "6f7559fff4e10131a269dc3a45248642c5d2ba4bb0b069119e00b0ca25b34a35cacc4ec710125e88a7ea39a1c0f437e42f2e456d1fbae225d3dc8ca81650ab30"
+#       SALT_PKG_URL: "https://repo.saltproject.io/salt/py3/macos/latest/salt-3007.0-py3-x86_64.pkg"
+#     steps:
+#       - name: Checkout latest commit
+#         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+#
+#       - name: Cache Salt installer
+#         uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9  # v4.0.2
+#         id: salt-pkg-cache
+#         with:
+#           path: /tmp/salt.pkg
+#           key: ${{ runner.os }}-salt-installer-${{ env.SALT_PKG_SHA512 }}
+#
+#       - name: Download Salt
+#         if: steps.salt-pkg-cache.outputs.cache-hit != 'true'
+#         run: |
+#           curl -L $SALT_PKG_URL --output /tmp/salt.pkg
+#
+#       - name: Install Salt
+#         run: |
+#           sudo installer -pkg /tmp/salt.pkg -target /
+#
+#       - name: Run Salt
+#         run: |
+#           mkdir /tmp/salt
+#           cp -R salt /tmp
+#           sudo cp minion_settings_mac.yml /etc/salt/master
+#           sudo cp minion_settings_mac.yml /etc/salt/minion
+#           ls /tmp/salt
+#           sudo salt-call --local state.apply -l debug
 
   Windows:
     runs-on: windows-2022
@@ -70,6 +70,7 @@ jobs:
           Write-Host "Salt installed"
 
       - name: Run Salt
-        working-directory: repo
+        # working-directory: repo
         run: |
-          Start-Process -FilePath "C:\Program Files\Salt Project\Salt\salt-call.exe"
+          cd "C:\Program Files\Salt Project\Salt\"
+          ./salt-call.exe --local state.apply -l debug
