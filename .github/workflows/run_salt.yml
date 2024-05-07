@@ -67,14 +67,14 @@ jobs:
           C:\salt.exe /S
           while (!(Test-Path "C:\Program Files\Salt Project\Salt\salt-call.exe")) { Start-Sleep 5 }
           Write-Host "Salt installed"
-          dir "C:\ProgramData\Salt Project\Salt\"
-          mkdir "C:\ProgramData\Salt Project\Salt\conf\"
-          dir "C:\ProgramData\Salt Project\Salt\"
+          dir "C:\Program Files\Salt Project\Salt\"
+          mkdir "C:\Program Files\Salt Project\Salt\conf\"
+          dir "C:\Program Files\Salt Project\Salt\"
 
       - name: Run Salt
         working-directory: repo
         run: |
-          copy minion_settings_windows.yml "C:\ProgramData\Salt Project\Salt\conf\minion"
-          copy minion_settings_windows.yml "C:\ProgramData\Salt Project\Salt\conf\master"
+          copy minion_settings_windows.yml "C:\Program Files\Salt Project\Salt\conf\minion"
+          copy minion_settings_windows.yml "C:\Program Files\Salt Project\Salt\conf\master"
           cd "C:\Program Files\Salt Project\Salt\"
           ./salt-call.exe --local state.apply -l debug
