@@ -72,5 +72,5 @@ jobs:
       - name: Run Salt
         working-directory: repo
         run: |
-          move minion_settings_windows.yml C:\Program Files\Salt Project\Salt\conf\master
+          move minion_settings_windows.yml "C:\Program Files\Salt Project\Salt\conf\master"
           salt-call --local state.apply
